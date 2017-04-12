@@ -27,37 +27,15 @@ function drawChar(char, x, y) {
   );
 }
 
-var myString = "Ready.\r\n? d\r\nstart? 11000\r\nend? 11010\r\nconfirm 11000 .. 11010 (y/n)?\r\n\n00010023 0400ae0c 12345678 deadbeef\r\n47283aac e9e9e9e9 1238d9a0 ab900fff\r\n0a0a0a99 29201a9c d320aa10 cc0a2e22\r\naba110ce 00000000 000100ff fefefefe\r\n\r\n? ";
-
-var x = 0;
-var y = 0;
-var i = 0;
-
-
 charset.onload = function () {
-  setInterval(function () {
-    if (i >= myString.length) return;
+  var ws = new WebSocket("ws://localhost:4567");
 
-    if (myString[i] === "\r") {
-      x = 0;
-      i++;
-      return;
-    }
+  ws.addEventListener('message', function (event) {
+    var msg = event.data.split(",");
 
-    if (myString[i] === "\n") {
-      y++;
-      i++;
-      return;
-    }
+    var idx = +msg[0];
+    var byte = +msg[1];
 
-    drawChar(myString.charCodeAt(i), x * 8, y * 12);
-
-    x++;
-    if (x >= 40) {
-      x = 0;
-      y++;
-    }
-
-    i++;
-  }, 50);
+    drawChar(byte, ((idx % 40) | 0) * 8, ((idx / 40) | 0) * 12);
+  });
 };
