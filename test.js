@@ -12,8 +12,6 @@ function drawChar(char, x, y) {
   if (char < 0) return;
   if (char > 255) return;
 
-  console.log("drawChar(", char, x, y, ")");
-
   ctx.drawImage(
     charset,
     ((char % 16) | 0) * 8,
@@ -28,14 +26,24 @@ function drawChar(char, x, y) {
 }
 
 charset.onload = function () {
-  var ws = new WebSocket("ws://localhost:4567");
+  var ws = new WebSocket("ws://localhost:2391", "v1.fai.devyn.me");
 
   ws.addEventListener('message', function (event) {
     var msg = event.data.split(",");
 
     var idx = +msg[0];
-    var byte = +msg[1];
+    var word = +msg[1];
 
-    drawChar(byte, ((idx % 40) | 0) * 8, ((idx / 40) | 0) * 12);
+    for (var b = 0; b < 4; b++) {
+      console.log(idx, word, b);
+
+      var byteIdx = (idx * 4) + b;
+
+      drawChar(
+        (word >> (b * 8)) & 0xff,
+        ((byteIdx % 40) | 0) * 8,
+        ((byteIdx / 40) | 0) * 12
+      );
+    }
   });
 };
