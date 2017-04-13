@@ -25,8 +25,18 @@ function drawChar(char, x, y) {
   );
 }
 
+var ws;
+
+window.onkeypress = function (e) {
+  var s = String.fromCharCode(e.charCode);
+
+  if (ws) {
+    ws.send(s);
+  }
+}
+
 charset.onload = function () {
-  var ws = new WebSocket("ws://localhost:2391", "v1.fai.devyn.me");
+  ws = new WebSocket("ws://localhost:2391", "v1.fai.devyn.me");
 
   ws.addEventListener('message', function (event) {
     var msg = event.data.split(",");
