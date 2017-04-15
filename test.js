@@ -35,6 +35,23 @@ window.onkeypress = function (e) {
   }
 }
 
+window.addEventListener("paste", function (e) {
+  console.log('paste', e);
+
+  var s;
+
+  if (s = e.clipboardData.getData("text")) {
+    for (var i = 0; i < s.length; i++) {
+      if (s[i] == '\n') {
+        ws.send('\r');
+      }
+      else {
+        ws.send(s[i]);
+      }
+    }
+  }
+});
+
 charset.onload = function () {
   ws = new WebSocket("ws://localhost:2391", "v1.fai.devyn.me");
 
