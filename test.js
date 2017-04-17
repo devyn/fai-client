@@ -2,8 +2,7 @@ var canvas = document.getElementById("canvas");
 
 var ctx = canvas.getContext('2d');
 
-ctx.fillStyle = 'black';
-ctx.fillRect(0, 0, 320, 240);
+ctx.clearRect(0, 0, 320, 240);
 
 var charset = new Image();
 charset.src = 'charset.png';
@@ -11,6 +10,10 @@ charset.src = 'charset.png';
 function drawChar(char, x, y) {
   if (char < 0) return;
   if (char > 255) return;
+
+  ctx.globalCompositeOperation = 'source-over';
+
+  ctx.clearRect(x, y, 8, 12);
 
   ctx.drawImage(
     charset,
@@ -23,6 +26,14 @@ function drawChar(char, x, y) {
     8,
     12
   );
+
+  ctx.globalCompositeOperation = 'source-atop';
+  ctx.fillStyle = 'white';
+  ctx.fillRect(x, y, 8, 12);
+
+  ctx.globalCompositeOperation = 'destination-over';
+  ctx.fillStyle = '#4d4784';
+  ctx.fillRect(x, y, 8, 12);
 }
 
 var ws;
